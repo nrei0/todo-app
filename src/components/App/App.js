@@ -1,3 +1,32 @@
+// const [value, setValue] = useState("Hello world");
+// const [text, setText] = useState("My text");
+
+// useEffect(() => {
+//   console.log("Rendering every time when props changed");
+// });
+
+// useEffect(() => {
+//   console.log("Rendering only at start");
+// }, []);
+
+// useEffect(() => {
+//   console.log('Rendering only when changed "value"');
+// }, [value]);
+
+// useEffect(() => {
+//   console.log('Rendering only when changed "text"');
+// }, [text]);
+
+// return (
+//   <div
+//     onClick={() => {
+//       setValue("World hell");
+//     }}
+//   >
+//     {value} - {text}
+//   </div>
+// );
+
 import { useState } from "react";
 import TodoList from "../TodoList/TodoList";
 import "./App.css";
@@ -19,20 +48,35 @@ const DEFAULT_ITEMS = [
 
 function App() {
   const [items, setItems] = useState(DEFAULT_ITEMS);
+  const [selectedId, setSelectedId] = useState(-1);
 
   const onItemClick = (id) => {
-    console.log("You clicked an item id: " + id);
+    setSelectedId(id);
+  };
 
-    if (id === 0) {
-      items[0].name = Math.random();
-      setItems([...items]);
-    }
+  const onItemBlur = () => {
+    setSelectedId(-1);
+  };
+
+  const onItemChange = (id, value) => {
+    setItems(
+      items.map((item) => ({
+        ...item,
+        name: item.id === id ? value : item.name,
+      }))
+    );
   };
 
   return (
     <div className="app">
       <h1>Todo App</h1>
-      <TodoList items={items} onItemClick={onItemClick} />
+      <TodoList
+        items={items}
+        onItemClick={onItemClick}
+        onItemBlur={onItemBlur}
+        onItemChange={onItemChange}
+        selectedId={selectedId}
+      />
     </div>
   );
 }
