@@ -27,7 +27,8 @@
 //   </div>
 // );
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import TodoList from "../TodoList/TodoList";
 import "./App.css";
 
@@ -49,6 +50,15 @@ const DEFAULT_ITEMS = [
 function App() {
   const [items, setItems] = useState(DEFAULT_ITEMS);
   const [selectedId, setSelectedId] = useState(-1);
+
+  useEffect(() => {
+    const makeAsyncCall = async () => {
+      const { data } = await axios.get("/todos");
+      console.log(data);
+    };
+
+    makeAsyncCall();
+  }, []);
 
   const onItemClick = (id) => {
     setSelectedId(id);
