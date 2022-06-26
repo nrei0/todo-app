@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 import "./TodoList.css";
 
 function TodoList(props) {
-  const { items, selectedId, onItemClick, onItemBlur, onItemChange } = props; // { items: [{  ... }, {... }] }
+  const { items, selectedId, onItemClick, onItemBlur, onItemChange, onItemAdd } = props; // { items: [{  ... }, {... }] }
 
   const inputRef = useRef(null); // { current: InputElement }
 
@@ -46,7 +46,12 @@ function TodoList(props) {
     );
   });
 
-  return <ul className="todo-list">{itemElements}</ul>;
+  return <div className="todo-list">
+    <ul>{itemElements}</ul>
+    <div className="todo-add-item" onClick={onItemAdd}>
+      Add new item
+    </div>
+  </div>
 }
 
 export default TodoList;

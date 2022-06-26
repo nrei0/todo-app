@@ -1,14 +1,24 @@
 .todo-list {
-	padding: 0;
+	display: block;
 }
-      
-.todo-item {
+
+.todo-list>ul {
+	padding: 0;
+	margin-bottom: 0;
+}
+
+.todo-item,
+.todo-add-item {
 	list-style-type: none;
 	display: block;
 	background-color: #f5f5f5;
 	border-bottom: 1px solid #e1e1e1;
 	padding: .75em;
 	cursor: pointer;
+}
+
+.todo-add-item {
+	background-color: #eaeaea;
 }
 
 /* .todo-item:last-child {

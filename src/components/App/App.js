@@ -77,6 +77,18 @@ function App() {
     );
   };
 
+  const onItemAdd = () => {
+    const id = items.length
+    const newItem = {
+      name: 'New item',
+      id
+    }
+    setItems(
+      [...items, newItem]
+    );
+    setSelectedId(id)
+  }
+
   return (
     <div className="app">
       <h1>Todo App</h1>
@@ -85,6 +97,7 @@ function App() {
         onItemClick={onItemClick}
         onItemBlur={onItemBlur}
         onItemChange={onItemChange}
+        onItemAdd={onItemAdd}
         selectedId={selectedId}
       />
     </div>
