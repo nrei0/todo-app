@@ -21,6 +21,21 @@
 	background-color: #eaeaea;
 }
 
+.todo-item-content {
+	word-wrap: break-word;
+}
+
+/* .todo-item-content,
+.todo-item-remove {
+	display: inline-block;
+}
+
+.todo-item-remove {
+	width: 32px;
+	text-align: right;
+	float: right;
+} */
+
 /* .todo-item:last-child {
 border:;
 } */

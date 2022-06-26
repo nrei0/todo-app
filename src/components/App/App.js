@@ -78,27 +78,30 @@ function App() {
   };
 
   const onItemAdd = () => {
-    const id = items.length
+    const id = items.length;
     const newItem = {
-      name: 'New item',
-      id
-    }
-    setItems(
-      [...items, newItem]
-    );
-    setSelectedId(id)
-  }
+      name: "New item",
+      id,
+    };
+    setItems([...items, newItem]);
+    setSelectedId(id);
+  };
+
+  const onItemRemove = (id) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
 
   return (
     <div className="app">
       <h1>Todo App</h1>
       <TodoList
         items={items}
+        selectedId={selectedId}
         onItemClick={onItemClick}
         onItemBlur={onItemBlur}
         onItemChange={onItemChange}
         onItemAdd={onItemAdd}
-        selectedId={selectedId}
+        onItemRemove={onItemRemove}
       />
     </div>
   );
