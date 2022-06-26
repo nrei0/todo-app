@@ -32,40 +32,67 @@ import axios from "axios";
 import TodoList from "../TodoList/TodoList";
 import "./App.css";
 
-const DEFAULT_ITEMS = [
-  {
-    name: "My item #1",
-    id: 0,
-  },
-  {
-    name: "My item #2",
-    id: 1,
-  },
-  {
-    name: "My item #3",
-    id: 2,
-  },
-];
-
 function App() {
-  const [items, setItems] = useState(DEFAULT_ITEMS);
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState([]);
   const [selectedId, setSelectedId] = useState(-1);
 
   useEffect(() => {
-    const makeAsyncCall = async () => {
-      const { data } = await axios.get("/todos");
-      console.log(data);
-    };
+    setLoading(true);
+    axios
+      .get("/todos")
+      .then((result) => {
+        const loadedTodoItems = (result.data || {}).todoItems || [];
 
-    makeAsyncCall();
+        if (loadedTodoItems.length) {
+          setItems(
+            loadedTodoItems.map((item) => {
+              return {
+                id: item.id,
+                name: item.value,
+              };
+            })
+          );
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const onItemClick = (id) => {
     setSelectedId(id);
   };
 
-  const onItemBlur = () => {
-    setSelectedId(-1);
+  const onItemBlur = (id) => {
+    setLoading(true);
+
+    const value = items.find((item) => item.id === id).name;
+
+    if (!value) {
+      onItemRemove(id);
+      return;
+    }
+
+    // `/todo/${id}` => /todo/1
+    axios
+      .patch(`/todo/${id}`, { value })
+      .then(({ data = {} }) => {
+        const { id, value } = data;
+
+        if (id) {
+          setItems(
+            items.map((item) => ({
+              ...item,
+              name: item.id === id ? value : item.name,
+            }))
+          );
+          setSelectedId(-1);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const onItemChange = (id, value) => {
@@ -78,31 +105,57 @@ function App() {
   };
 
   const onItemAdd = () => {
-    const id = items.length;
-    const newItem = {
-      name: "New item",
-      id,
-    };
-    setItems([...items, newItem]);
-    setSelectedId(id);
+    setLoading(true);
+    axios
+      .post("/todo")
+      .then(({ data = {} }) => {
+        const { id, value } = data;
+
+        if (id) {
+          setItems([...items, { id, name: value }]);
+          setSelectedId(id);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const onItemRemove = (id) => {
-    setItems(items.filter((item) => item.id !== id));
+    setLoading(true);
+
+    axios
+      .delete(`/todo/${id}`)
+      .then(({ data = {} }) => {
+        const { id } = data;
+
+        if (id) {
+          setItems(items.filter((item) => item.id !== id));
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
     <div className="app">
       <h1>Todo App</h1>
-      <TodoList
-        items={items}
-        selectedId={selectedId}
-        onItemClick={onItemClick}
-        onItemBlur={onItemBlur}
-        onItemChange={onItemChange}
-        onItemAdd={onItemAdd}
-        onItemRemove={onItemRemove}
-      />
+      {loading ? (
+        <div className="spinner-grow" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      ) : (
+        <TodoList
+          items={items}
+          selectedId={selectedId}
+          onItemClick={onItemClick}
+          onItemBlur={onItemBlur}
+          onItemChange={onItemChange}
+          onItemAdd={onItemAdd}
+          onItemRemove={onItemRemove}
+        />
+      )}
     </div>
   );
 }

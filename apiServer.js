@@ -33,8 +33,6 @@ app.get("/todos", (req, res) => {
 
 app.post("/todo", (req, res) => {
   const id = crypto.randomBytes(20).toString("hex");
-  console.log("asdfgadsfsa");
-  console.log(id);
   const value = "Input yours todo...";
 
   if (todoItems[id]) {
@@ -70,7 +68,7 @@ app.patch("/todo/:id", (req, res) => {
 app.delete("/todo/:id", (req, res) => {
   const { id } = req.params;
 
-  if (!todoItems[id]) {
+  if (!(id in todoItems)) {
     res.status(400).send();
     return;
   }
